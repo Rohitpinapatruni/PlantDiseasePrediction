@@ -1,0 +1,8 @@
+PlantVillage - Copy
+.ipynb_checkpoints
+api/__pycache__/
+venv
+model_building/PlantVillage
+model_building/.ipynb_checkpoints
+models.config
+
