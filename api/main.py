@@ -8,7 +8,8 @@ import io
 # ==== CONFIGURATION ====
 IMG_SIZE = 256
 CLASS_NAMES = ['Early_Blight', 'Late_Blight', 'Healthy']
-MODEL_PATH = "D:/projects/models/1/v1.keras"
+MODEL_PATH = "models/1/v1.keras"
+
 
 # ==== LOAD MODEL ====
 model = tf.keras.models.load_model(MODEL_PATH)
