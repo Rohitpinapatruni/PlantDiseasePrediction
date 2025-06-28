@@ -5,3 +5,5 @@ python-multipart
 pillow
 matplotlib
 numpy
+sqlalchemy
+aiosqlite
