@@ -1,9 +1,12 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File ,Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 import io
+from database import PredictionRecord, get_db
+
 
 # ==== CONFIGURATION ====
 IMG_SIZE = 256
@@ -53,14 +56,22 @@ def preprocess_image(image_bytes):
 
 # ==== PREDICTION ROUTE ====
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(file: UploadFile = File(...), db: AsyncSession = Depends(get_db)):
     contents = await file.read()
     image_tensor = preprocess_image(contents)
 
     predictions = model.predict(image_tensor)
     confidence = float(np.max(predictions[0]))*100
     predicted_class = CLASS_NAMES[int(np.argmax(predictions[0]))]
-
+    # Save prediction to database
+    record = PredictionRecord(
+        filename=file.filename,
+        predicted_class=predicted_class,
+        confidence=round(confidence, 2)
+    )
+    db.add(record)
+    await db.commit()
+    
     return {
         "class": predicted_class,
         "confidence": round(confidence, 2),
