@@ -5,4 +5,7 @@ venv
 model_building/PlantVillage
 model_building/.ipynb_checkpoints
 models.config
+sqlalchemy
+aiosqlite
+
 

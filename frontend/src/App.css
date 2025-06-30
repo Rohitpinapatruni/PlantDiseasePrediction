@@ -1,20 +1,30 @@
 .App {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    background-color: #e3f2fd;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
 }
 
 .App-header {
-    background-color: #007bff;
-    padding: 20px;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    width: 100%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #147bca;
+  padding: 30px 20px;
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.App-header h1 {
+  
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.App-header h3 {
+  background-color: #c60b0b;  
+  margin-top: 10px;
+  font-weight: normal;
+  font-size: 1.2rem;
+  opacity: 0.9;
 }
