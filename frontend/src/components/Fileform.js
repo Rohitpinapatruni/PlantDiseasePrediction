@@ -69,6 +69,9 @@ function Fileform() {
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               width={350}
+              videoConstraints={{
+                    facingMode: { exact: "environment" } // Use "user" for front camera
+                }}
             />
             <button type="button" onClick={capture}>Capture</button>
           </>
