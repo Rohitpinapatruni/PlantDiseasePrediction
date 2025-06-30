@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import Webcam from 'react-webcam';
+import { isMobile } from 'react-device-detect';
 import './Fileform.css';
 
 function Fileform() {
@@ -9,11 +10,10 @@ function Fileform() {
   const [useCamera, setUseCamera] = useState(false);
   const webcamRef = useRef(null);
 
-  const capture = useCallback(() => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setPreview(imageSrc);
-    setFile(dataURLtoFile(imageSrc, 'captured.jpg'));
-  }, [webcamRef]);
+  const videoConstraints = {
+    facingMode: isMobile ? { exact: 'environment' } : 'user',
+    width: 350
+  };
 
   const dataURLtoFile = (dataurl, filename) => {
     const arr = dataurl.split(',');
@@ -25,7 +25,15 @@ function Fileform() {
     return new File([u8arr], filename, { type: mime });
   };
 
-  const HandleFileInputChange = (event) => {
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (imageSrc) {
+      setPreview(imageSrc);
+      setFile(dataURLtoFile(imageSrc, 'captured.jpg'));
+    }
+  }, [webcamRef]);
+
+  const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     if (selectedFile) {
@@ -33,7 +41,20 @@ function Fileform() {
     }
   };
 
-  const HandleSubmit = async (event) => {
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const droppedFile = event.dataTransfer.files[0];
+    if (droppedFile) {
+      setFile(droppedFile);
+      setPreview(URL.createObjectURL(droppedFile));
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
     formData.append('file', file);
@@ -57,28 +78,65 @@ function Fileform() {
 
   return (
     <div className="fileform">
-      <button onClick={() => setUseCamera(!useCamera)}>
-        {useCamera ? 'Use File Upload' : 'Use Camera'}
-      </button>
+      <h2>Upload or Capture Image</h2>
 
-      <form onSubmit={HandleSubmit}>
-        {useCamera ? (
-          <>
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              width={350}
-              videoConstraints={{
-                    facingMode: { exact: "environment" } // Use "user" for front camera
-                }}
-            />
-            <button type="button" onClick={capture}>Capture</button>
-          </>
-        ) : (
-          <input type="file" accept="image/*" onChange={HandleFileInputChange} />
+      <form onSubmit={handleSubmit} className="form-container">
+        {!useCamera && (
+          <div
+            className="drag-drop-zone"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            <p>Drag and drop an image here</p>
+          </div>
         )}
-        <button type="submit">Predict</button>
+
+        <div className="upload-options">
+          <button
+            type="button"
+            className="toggle-button"
+            onClick={() => {
+              setUseCamera(!useCamera);
+              setFile(null);
+              setPreview(null);
+              setPrediction(null);
+            }}
+          >
+            {useCamera ? '📁 Switch to File Upload' : '📷 Switch to Camera'}
+          </button>
+
+          {!useCamera && (
+            <input
+              type="file"
+              accept="image/*"
+              className="file-input"
+              onChange={handleFileInputChange}
+            />
+          )}
+
+          {useCamera && (
+            <div className="camera-container">
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                videoConstraints={videoConstraints}
+              />
+              <br />
+              <button
+                type="button"
+                className="capture-button"
+                onClick={capture}
+              >
+                📸 Capture
+              </button>
+            </div>
+          )}
+        </div>
+
+        <button type="submit" className="predict-button" disabled={!file}>
+          🧠 Predict
+        </button>
       </form>
 
       {preview && (
