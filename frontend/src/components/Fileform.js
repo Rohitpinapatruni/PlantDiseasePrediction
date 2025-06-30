@@ -22,7 +22,7 @@ function Fileform() {
         formData.append('file', file);
 
         try {
-            const response = await fetch('https://plantdiseaseprediction-backend.onrender.com/predict', {
+            const response = await fetch('https://leafpredbackend.onrender.com/predict', {
                 method: 'POST',
                 body: formData
             });
