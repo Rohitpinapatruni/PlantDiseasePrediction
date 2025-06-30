@@ -26,7 +26,7 @@ app.add_middleware(
         "http://localhost:3000",  # for local testing
         "https://leafdiseaseprediction25.netlify.app/",
         "https://685fcb185e5b1684410b2b8a--leafdiseaseprediction25.netlify.app/",
-        "https://leafdiseaseprediction25.netlify.app"
+        "https://plantdiseaseprediction-backend.onrender.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
